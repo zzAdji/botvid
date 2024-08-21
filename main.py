@@ -1,15 +1,15 @@
+import random
+import asyncio
 from telethon import TelegramClient
-from telethon.errors import SessionPasswordNeededError
+from telethon.errors import SessionPasswordNeededError, ChatWriteForbiddenError, ChatAdminRequiredError
 
-# Configuration des variables
-api_id = 27252909
-api_hash = '6f91353b47b4fac1ebbfcee74486d119'
-phone_number = '+237656496419'
+api_id = 22675377
+api_hash = 'dbbb2bd930849d92c5e44bec71cc5cc0'
+phone_number = '+237674644148'
 
-# Connexion au client
 client = TelegramClient('session_name', api_id, api_hash)
 
-async def main():
+async def send_messages_to_groups():
     await client.start(phone_number)
 
     if not await client.is_user_authorized():
@@ -19,12 +19,27 @@ async def main():
             pw = input('Veuillez entrer votre mot de passe : ')
             await client.sign_in(password=pw)
 
-    group = 'universegroupe'
+    async for dialog in client.iter_dialogs():
+        if dialog.is_group:
+            group = dialog.id
+            message = "E-Carte cadeau Carrefour dispo à -50% lien dans la bio"
 
-    message = "bonjour"
+            try:
+                await client.send_message(group, message)
+                print(f"Message envoyé au groupe: {dialog.name}")
 
-    # Envoi du message dans le groupe
-    await client.send_message(group, message)
+            except (ChatWriteForbiddenError, ChatAdminRequiredError) as e:
+                print(f"Impossible d'envoyer un message dans le groupe {dialog.name}: {str(e)}")
+
+            await asyncio.sleep(random.randint(60, 120))
+
+async def main():
+    while True:
+        await send_messages_to_groups()
+
+        next_run_in = random.randint(3600, 7200)  # Secondes (1h à 2h)
+        print(f"Prochain envoi dans {next_run_in / 3600:.2f} heures")
+        await asyncio.sleep(next_run_in)
 
 with client:
     client.loop.run_until_complete(main())
