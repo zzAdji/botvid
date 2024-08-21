@@ -34,12 +34,7 @@ async def send_messages_to_groups():
             await asyncio.sleep(random.randint(60, 120))
 
 async def main():
-    while True:
-        await send_messages_to_groups()
-
-        next_run_in = random.randint(3600, 7200)  # Secondes (1h à 2h)
-        print(f"Prochain envoi dans {next_run_in / 3600:.2f} heures")
-        await asyncio.sleep(next_run_in)
+    await send_messages_to_groups()
 
 with client:
     client.loop.run_until_complete(main())
