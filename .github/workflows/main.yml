@@ -1,9 +1,15 @@
-name: Randomized Python Script Execution
+name: Python Script Execution by AlimZz
 
 on:
   schedule:
-    - cron: '0 */2 * * *'  # Exécute toutes les 2 heures (00h00, 02h00, 04h00, etc.)
-
+    - cron: '0 */2 * * *'  # Exécute toutes les 2 heures
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+      
 jobs:
   run-script:
     runs-on: ubuntu-latest
@@ -15,7 +21,11 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
-        python-version: '3.10'
+        python-version: '3.10'  # Spécifiez la version de Python, par exemple '3.8'
+
+    - name: Install dependencies
+      run: |
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
     - name: Add random delay
       run: |
