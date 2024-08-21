@@ -1,0 +1,27 @@
+name: Randomized Python Script Execution
+
+on:
+  schedule:
+    - cron: '0 */2 * * *'  # Exécute toutes les 2 heures (00h00, 02h00, 04h00, etc.)
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: Add random delay
+      run: |
+        RANDOM_DELAY=$((RANDOM % 1500))
+        echo "Sleeping for $RANDOM_DELAY seconds..."
+        sleep $RANDOM_DELAY
+
+    - name: Run Python script
+      run: python main.py  # Remplacez par le nom de votre script Python
