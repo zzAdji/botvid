@@ -1,7 +1,13 @@
 import random
 import asyncio
 from telethon import TelegramClient
-from telethon.errors import SessionPasswordNeededError, ChatWriteForbiddenError, ChatAdminRequiredError
+from telethon.errors import (
+    SessionPasswordNeededError, 
+    ChatWriteForbiddenError, 
+    ChatAdminRequiredError,
+    SlowModeWaitError,
+    ChannelPrivateError
+)
 
 api_id = 22675377
 api_hash = 'dbbb2bd930849d92c5e44bec71cc5cc0'
@@ -28,10 +34,23 @@ async def send_messages_to_groups():
                 await client.send_message(group, message)
                 print(f"Message envoyé au groupe: {dialog.name}")
 
-            except (ChatWriteForbiddenError, ChatAdminRequiredError) as e:
-                print(f"Impossible d'envoyer un message dans le groupe {dialog.name}: {str(e)}")
+            except SlowModeWaitError as e:
+                print(f"Le groupe {dialog.name} est en mode lent : {str(e)}")
+                await asyncio.sleep(e.seconds)
 
-            await asyncio.sleep(random.randint(60, 120))
+            except ChatWriteForbiddenError as e:
+                print(f"Impossible d'envoyer un message dans le groupe {dialog.name}: {str(e)}")
+                continue  # Skip this group and move to the next
+
+            except ChatAdminRequiredError as e:
+                print(f"Droits d'administration requis pour envoyer un message dans le groupe {dialog.name}: {str(e)}")
+                continue  # Skip this group and move to the next
+
+            except ChannelPrivateError as e:
+                print(f"Le groupe {dialog.name} est privé ou vous n'avez pas accès : {str(e)}")
+                continue  # Skip this group and move to the next
+
+            await asyncio.sleep(random.randint(0, 8))
 
 async def main():
     await send_messages_to_groups()
