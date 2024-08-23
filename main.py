@@ -28,7 +28,7 @@ async def send_messages_to_groups():
     async for dialog in client.iter_dialogs():
         if dialog.is_group:
             group = dialog.id
-            message = "E-Carte cadeau Carrefour dispo à -50% lien dans la bio"
+            message = "Je leak les cc sniff ce soir à 20h 🕗 dans mon canal ne manqué pas !! \nLien du canal en bio"
 
             try:
                 await client.send_message(group, message)
