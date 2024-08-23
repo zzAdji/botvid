@@ -13,7 +13,7 @@ api_id = 22675377
 api_hash = 'dbbb2bd930849d92c5e44bec71cc5cc0'
 phone_number = '+237674644148'
 
-client = TelegramClient('session_name', api_id, api_hash)
+client = TelegramClient('session_23_08_2024', api_id, api_hash)
 
 async def send_messages_to_groups():
     await client.start(phone_number)
